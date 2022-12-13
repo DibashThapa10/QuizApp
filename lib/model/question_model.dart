@@ -1,6 +1,6 @@
 class QuestionModel {
   final String question;
-  final bool answer;
+ final Map<String, bool> answer;
 
-  QuestionModel({required this.question, required this.answer});
+  QuestionModel( {required this.question, required this.answer});
 }
