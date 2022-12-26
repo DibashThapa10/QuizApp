@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/data/question_data.dart';
+import 'package:quiz_app/score/result_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
           padding: const EdgeInsets.all(18),
           child: PageView.builder(
+            physics: const NeverScrollableScrollPhysics(),
             controller: _controller,
             onPageChanged: (page) {
               setState(() {
@@ -84,7 +86,6 @@ class _HomePageState extends State<HomePage> {
                                     .toList()[i]
                                     .value) {
                                   score += 10;
-                                  print(score);
                                 }
                               },
                         child: Text(
@@ -101,16 +102,33 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       OutlinedButton(
                         onPressed: isPressed
-                            ? () {
-                                _controller.nextPage(
-                                    duration: const Duration(milliseconds: 500),
-                                    curve: Curves.linear);
-                              }
+                            ? index + 1 == questions.length
+                                ? () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ResultScreen(score)));
+                                  }
+                                : () {
+                                    _controller.nextPage(
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                        curve: Curves.linear);
+                                    setState(() {
+                                      isPressed = false;
+                                    });
+                                  }
                             : null,
-                        style: const ButtonStyle(),
-                        child: const Text(
-                          "Next Question",
-                          style: TextStyle(color: Colors.white),
+                        style: OutlinedButton.styleFrom(
+                            shape: const StadiumBorder(),
+                            side: const BorderSide(
+                                color: Colors.yellow, width: 1)),
+                        child: Text(
+                          index + 1 == questions.length
+                              ? "See result"
+                              : "Next Question ",
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
                     ],
