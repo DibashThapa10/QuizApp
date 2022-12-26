@@ -9,6 +9,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final PageController _controller = PageController(initialPage: 0);
+  bool isPressed = false;
+  Color isTrue = Colors.green;
+  Color isWrong = Colors.red;
+  Color btnColor = Colors.blueAccent;
+  int score = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,6 +23,12 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
           padding: const EdgeInsets.all(18),
           child: PageView.builder(
+            controller: _controller,
+            onPageChanged: (page) {
+              setState(() {
+                isPressed = false;
+              });
+            },
             itemCount: questions.length,
             itemBuilder: (context, index) {
               return Column(
@@ -53,9 +66,27 @@ class _HomePageState extends State<HomePage> {
                       margin: const EdgeInsets.only(bottom: 20),
                       child: MaterialButton(
                         shape: const StadiumBorder(),
-                        color: Colors.blueAccent,
+                        color: isPressed
+                            ? questions[index].answer.entries.toList()[i].value
+                                ? isTrue
+                                : isWrong
+                            : Colors.blueAccent,
                         padding: const EdgeInsets.symmetric(vertical: 20),
-                        onPressed: () {},
+                        onPressed: isPressed
+                            ? () {}
+                            : () {
+                                setState(() {
+                                  isPressed = true;
+                                });
+                                if (questions[index]
+                                    .answer
+                                    .entries
+                                    .toList()[i]
+                                    .value) {
+                                  score += 10;
+                                  print(score);
+                                }
+                              },
                         child: Text(
                           questions[index].answer.keys.toList()[i],
                           style: const TextStyle(color: Colors.white),
@@ -63,15 +94,26 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   const SizedBox(
-                    height: 30,
+                    height: 50,
                   ),
-                  OutlinedButton(
-                    onPressed: () {},
-                    style: const ButtonStyle(),
-                    child: const Text(
-                      "Next Question",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton(
+                        onPressed: isPressed
+                            ? () {
+                                _controller.nextPage(
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.linear);
+                              }
+                            : null,
+                        style: const ButtonStyle(),
+                        child: const Text(
+                          "Next Question",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               );
