@@ -2,7 +2,7 @@
 
 A new Flutter project.
 
-Some screenshot a Flutter application.
+Some screenshot of a Flutter application.
 
 ## Start Screen
 
